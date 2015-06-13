@@ -2,3 +2,4 @@
 .bundle
 keystore
 vendor
+Gemfile.lock
