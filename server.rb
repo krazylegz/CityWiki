@@ -1,46 +1,42 @@
 require 'sinatra'
 require 'json'
 require 'unirest'
+require 'cities'
 
 set :port, 8080
-
 key = File.read("keystore")
 
 get '/' do
-  "wwiki => type http://localhost:8080/api/New+York as an address url and press enter."
+  "citywiki => type http://localhost:8080/tampa as an address url and press enter."
 end
 
-get '/api/:id' do
-  # define content type
+get '/:id' do
   content_type :json
 
-  # get wikipedia api response
-  wiki_response = Unirest.get "http://en.wikipedia.org/w/api.php?action=opensearch&search=At&namespace=0",
+  wiki_uri = URI.parse(URI.encode("http://en.wikipedia.org/w/api.php?action=query&prop=extracts|info&exintro&titles=#{params['id']}&format=json&explaintext&redirects&inprop=url&indexpageids".strip)).to_s
+  wiki_response = Unirest.get wiki_uri,
                               headers: {
                                 "X-Mashape-Key" => key,
                                 "Accept" => "application/json"
                               }
+  wiki_data = JSON.parse(wiki_response.body.to_json)
+  wiki_page_id = wiki_data["query"]["pageids"][0]
+  wiki_title = wiki_data["query"]["pages"][wiki_page_id]["title"]
+  wiki_info = wiki_data["query"]["pages"][wiki_page_id]["extract"]
+  wiki_url = wiki_data["query"]["pages"][wiki_page_id]["fullurl"]
 
-  # parse wikipedia data
-  wiki_data = JSON.parse(wiki_response)
-  info = wiki_data.content
-  latitude = wiki_data.coordinates[0]
-  longitude = wiki_data.coordinates[1]
+  Cities.data_path = './data/'
+  cities = Cities.cities_in_country('US')
+  city = cities["#{params['id']}"]
+  latitude = city.latlong[0].to_s
+  longitude = city.latlong[1].to_s
 
-  # get weather api response
-  weather_response = Unirest.get "https://simple-weather.p.mashape.com/weatherdata?lat=" + latitude + "&lng=" + longitude,
-                         headers:{
-                           "X-Mashape-Key" => key,
-                           "Accept" => "application/json"
-                         }
-
-  # parse weather data
-  weather_data = JSON.parse(weather_response)
-
-  # create json object from gather data (wiki and weather)
-  #JSON.generate()
-
-  # print json data to screen
-  { :city => 'value0', :info => 'value1', :latitude => 'value2', :longitude => 'value3' }.to_json
-
+  weather_uri = "https://simple-weather.p.mashape.com/weatherdata?lat=" + latitude + "&lng=" + longitude
+  weather_response = Unirest.get weather_uri,
+                                 headers:{
+                                   "X-Mashape-Key" => key,
+                                   "Accept" => "application/json"
+                                 }
+  #puts weather_response.body
+  json = JSON.generate({ :city => wiki_title, :geo => [:latitude => latitude, :longitude => longitude], :info => wiki_info, :url => wiki_url })
 end

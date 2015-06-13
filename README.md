@@ -1,9 +1,18 @@
 # wwiki
-getting data from the weather and wikipedia api using sinatra and mashape
+(wip) getting data from the weather and wikipedia api using sinatra and mashape
 
-### Installation
+## Installation
 
 ```bash
+# get json data for every city in the US (required by Cities gem).
+wget https://s3-us-west-2.amazonaws.com/cities-gem/cities.tar.gz
+
+# extract cities from tar file
+tar -xzf cities.tar.gz
+
+# rename cities to data
+mv cities data
+
 # add key from mashape to keystore
 touch keystore
 

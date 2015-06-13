@@ -3,3 +3,6 @@
 keystore
 vendor
 Gemfile.lock
+data
+cities
+cities.tar.gz
