@@ -1,11 +1,15 @@
 # wwiki
-getting data from the weather and wikipedia api using sinatra
+getting data from the weather and wikipedia api using sinatra and mashape
 
 ### Installation
 
-*Create a file called "keystore" in the root directory and put your mashape key on the first line.*
-
 ```bash
+# add key from mashape to keystore
+touch keystore
+
+# install dependencies
 bundle install
+
+# run server on port 8080
 ruby server.rb
 ```
