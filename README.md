@@ -1,5 +1,5 @@
 # wwiki
-(wip) getting data from the weather and wikipedia api using sinatra and mashape
+(wip) getting data from the cities gem, weather and wikipedia api using sinatra and mashape
 
 ## Installation
 

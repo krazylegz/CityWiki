@@ -13,6 +13,12 @@ end
 get '/:id' do
   content_type :json
 
+  Cities.data_path = './data/'
+  cities = Cities.cities_in_country('US')
+  city = cities["#{params['id']}"]
+  latitude = city.latlong[0].to_s
+  longitude = city.latlong[1].to_s
+
   wiki_uri = URI.parse(URI.encode("http://en.wikipedia.org/w/api.php?action=query&prop=extracts|info&exintro&titles=#{params['id']}&format=json&explaintext&redirects&inprop=url&indexpageids".strip)).to_s
   wiki_response = Unirest.get wiki_uri,
                               headers: {
@@ -24,12 +30,6 @@ get '/:id' do
   wiki_title = wiki_data["query"]["pages"][wiki_page_id]["title"]
   wiki_info = wiki_data["query"]["pages"][wiki_page_id]["extract"]
   wiki_url = wiki_data["query"]["pages"][wiki_page_id]["fullurl"]
-
-  Cities.data_path = './data/'
-  cities = Cities.cities_in_country('US')
-  city = cities["#{params['id']}"]
-  latitude = city.latlong[0].to_s
-  longitude = city.latlong[1].to_s
 
   weather_uri = "https://simple-weather.p.mashape.com/weatherdata?lat=" + latitude + "&lng=" + longitude
   weather_response = Unirest.get weather_uri,
