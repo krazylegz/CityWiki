@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'wikipedia'
 require 'unirest'
 require 'haml'
 
@@ -11,18 +12,19 @@ get '/' do
 end
 
 get '/api/:id' do
-  response = Unirest.get "https://community-wikipedia.p.mashape.com/api.php?action=query&format=json&prop=revisions&rvprop=content&titles=#{params['id']}",
-                         headers: {
-                           "X-Mashape-Key" => key,
-                           "Accept" => "application/json"
-                         }
+  # get wikipedia request
+  wiki_request = Wikipedia.find( "#{params['id']}" )
+  wiki_data = wiki_request.raw_data
 
-  latitude = response[0]
-  longiture = response[1]
+  puts wiki_request.title
+  info = wiki_request.content
+  latitude = wiki_request.coordinates[0]
+  longiture = wiki_request.coordinates[1]
 
+  # weather api
   response = Unirest.get "https://simple-weather.p.mashape.com/weatherdata?lat=" + latitude + "&lng=" + longitude,
                          headers:{
-                           "X-Mashape-Key" => "l0kmxTytl7mshwOMflAD8VvjnlyOp1nlv2Djsnuc2v2IJ5SRNr",
+                           "X-Mashape-Key" => key,
                            "Accept" => "application/json"
                          }
 end
