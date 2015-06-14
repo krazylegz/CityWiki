@@ -36,9 +36,7 @@ get '/:id+:state' do
                                    "Accept" => "application/json"
                                  }
   weather_data = JSON.parse(weather_response.body.to_json)
-  puts weather_data
-  weather_forecast = weather_data["query"]["results"]["channel"]["item"]["forcast"]
-  puts weather_forecast
+  weather_forecast = weather_data["query"]["results"]["channel"]["item"]["forecast"]
 
   json = JSON.generate({ :city => wiki_title, :geo => [:latitude => latitude, :longitude => longitude], :weather_forcast => weather_forecast, :info => wiki_info, :url => wiki_url })
 end
