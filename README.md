@@ -1,5 +1,5 @@
 # citywiki
-getting create a weather data and wiki article on your favority city with sinatra and mashape
+create a weather data and wiki article on your favority city with sinatra and mashape
 
 ## Installation
 
