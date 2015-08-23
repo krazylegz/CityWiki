@@ -1,5 +1,5 @@
 # citywiki
-(wip) getting data from the geocoder gem, weather and wikipedia api using sinatra and mashape
+getting create a weather data and wiki article on your favority city with sinatra and mashape
 
 ## Installation
 
