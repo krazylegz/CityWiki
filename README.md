@@ -1,5 +1,5 @@
 # citywiki
-create a weather data and wiki article json response for your favority city with sinatra and mashape
+getting data wikipedia and weather API using sinatra and unirest
 
 ## Installation
 
@@ -14,4 +14,4 @@ bundle
 ruby server.rb
 ```
 
-*example: type http://localhost:8080/tampa+fl as an address url and press enter.*
+*Type localhost:8080/new+york as an address url and press enter.*
