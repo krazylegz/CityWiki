@@ -25,7 +25,8 @@ def key
 end
 
 def build_wikipedia
-  "http://en.wikipedia.org/w/api.php?action=query&prop=extracts|info&exintro&titles=#{@city}+#{@state}&format=json&explaintext&redirects&inprop=url&indexpageids"
+  wiki = "http://en.wikipedia.org/w/api.php?action=query&prop=extracts|info&exintro&titles="
+  wiki += "#{@city}+#{@state}&format=json&explaintext&redirects&inprop=url&indexpageids"
 end
 
 def wiki_uri
@@ -78,5 +79,6 @@ def build_json
   weather_data = JSON.parse(weather_response.body.to_json)
   weather_forecast = weather_data["query"]["results"]["channel"]["item"]["forecast"]
 
-  JSON.generate({ :city => city, :geo => [:latitude => latitude, :longitude => longitude], :weather_forcast => weather_forecast, :info => info, :url => url })
+  JSON.generate({ :city => city, :geo => [:latitude => latitude, :longitude => longitude],
+                  :weather_forcast => weather_forecast, :info => info, :url => url })
 end
