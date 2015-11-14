@@ -6,14 +6,14 @@ require 'geocoder'
 set :port, 8080
 
 get '/' do
-  'citywiki => type http://localhost:8080/tampa+fl as an address url and press enter.'
+  'Type localhost:8080/new+york or localhost:8080/tampa+fl in the address bar and press enter.'
 end
 
-get '/:id+:element' do
+get '/city+:state' do
   content_type :json
 
-  @city = "#{params['id']}"
-  @state = "#{params['element']}"
+  @city = "#{params['city']}"
+  @state = "#{params['state']}"
 
   build_json
 end
