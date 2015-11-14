@@ -9,7 +9,7 @@ get '/' do
   'Type localhost:8080/new+york or localhost:8080/tampa+fl in the address bar and press enter.'
 end
 
-get '/city+:state' do
+get '/:city+:state' do
   content_type :json
 
   @city = "#{params['city']}"
