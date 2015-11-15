@@ -85,8 +85,8 @@ def info
   wiki_data["query"]["pages"][id]["extract"] ||= "Info was not found from query!"
 end
 
-def url
-  wiki_data["query"]["pages"][id]["fullurl"] ||= "Url was not returned from query!"
+def wiki_url
+  wiki_data["query"]["pages"][id]["canonicalurl"] ||= "Url was not returned from query!"
 end
 
 def forecast
@@ -94,6 +94,7 @@ def forecast
 end
 
 def build_json
+  puts wiki_data
   JSON.generate({ :city => city, :geo => [:latitude => latitude, :longitude => longitude],
-                  :weather_forcast => forecast, :info => info, :url => url })
+                  :weather_forcast => forecast, :info => info, :url => wiki_url })
 end
