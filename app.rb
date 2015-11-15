@@ -26,7 +26,8 @@ end
 
 def build_wikipedia
   wiki = 'http://en.wikipedia.org/w/api.php?action=query&prop=extracts|info&exintro&titles='
-  wiki += "#{@city}+#{@state}&format=json&explaintext&redirects&inprop=url&indexpageids"
+  wiki += "#{@city}+#{@state}"
+  wiki += '&format=json&explaintext&redirects&inprop=url&indexpageids'
 end
 
 def wiki_request
@@ -58,7 +59,7 @@ def longitude
 end
 
 def weather_request
-  'https://simple-weather.p.mashape.com/weatherdata?lat=' + latitude + "&lng=" + longitude
+  'https://simple-weather.p.mashape.com/weatherdata?lat=' + latitude + '&lng=' + longitude
 end
 
 def weather_response
@@ -74,23 +75,23 @@ def weather_data
 end
 
 def id
-  wiki_data["query"]["pageids"][0] ||= "Wiki Page ID was not found from query!"
+  wiki_data['query']['pageids'][0] ||= 'Wiki Page ID was not found from query!'
 end
 
 def city
-  wiki_data["query"]["pages"][id]["title"] ||= "City was not found from query!"
+  wiki_data['query']['pages'][id]['title'] ||= 'City was not found from query!'
 end
 
 def info
-  wiki_data["query"]["pages"][id]["extract"] ||= "Info was not found from query!"
+  wiki_data['query']['pages'][id]'extract'] ||= 'Info was not found from query!'
 end
 
 def wiki_url
-  wiki_data["query"]["pages"][id]["canonicalurl"] ||= "Url was not returned from query!"
+  wiki_data['query']['pages'][id]['canonicalurl'] ||= 'Url was not returned from query!'
 end
 
 def forecast
-  weather_data["query"]["results"]["channel"]["item"]["forecast"]
+  weather_data['query']['results']['channel']['item']['forecast']
 end
 
 def build_json
