@@ -94,7 +94,6 @@ def forecast
 end
 
 def build_json
-  puts wiki_data
   JSON.generate({ :city => city, :geo => [:latitude => latitude, :longitude => longitude],
                   :weather_forcast => forecast, :info => info, :url => wiki_url })
 end
