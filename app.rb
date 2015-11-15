@@ -94,6 +94,6 @@ def forecast
 end
 
 def build_json
-  JSON.generate({ :city => city, :geo => [:latitude => latitude, :longitude => longitude],
-                  :weather_forcast => forecast, :info => info, :url => wiki_url })
+  { :city => city, :geo => [:latitude => latitude, :longitude => longitude],
+    :weather_forcast => forecast, :info => info, :url => wiki_url }.to_json
 end
