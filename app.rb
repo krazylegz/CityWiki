@@ -42,19 +42,19 @@ def wiki_response
 end
 
 def wiki_data
-  JSON.parse(wiki_rest_call.body.to_json) || "Wiki data not found from query!"
+  JSON.parse(wiki_response.body.to_json) || "Wiki data not found from query!"
 end
 
-def city
+def geocoder_request
   Geocoder.search("#{@city}, #{@state}")
 end
 
 def latitude
-  city[0].latitude.to_s
+  geocoder_request[0].latitude.to_s
 end
 
 def longitude
-  city[0].longitude.to_s
+  geocoder_request[0].longitude.to_s
 end
 
 def weather_request
@@ -95,5 +95,5 @@ end
 
 def build_json
   JSON.generate({ :city => city, :geo => [:latitude => latitude, :longitude => longitude],
-                  :weather_forcast => weather_forecast, :info => info, :url => url })
+                  :weather_forcast => forecast, :info => info, :url => url })
 end
