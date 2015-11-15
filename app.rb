@@ -36,13 +36,13 @@ end
 def wiki_response
   Unirest.get wiki_request,
               headers: {
-                "X-Mashape-Key" => key,
-                "Accept" => "application/json"
+                'X-Mashape-Key' => key,
+                'Accept' => 'application/json'
               }
 end
 
 def wiki_data
-  JSON.parse(wiki_response.body.to_json) || "Wiki data not found from query!"
+  JSON.parse(wiki_response.body.to_json) || 'Wiki data not found from query!'
 end
 
 def geocoder_request
@@ -58,7 +58,7 @@ def longitude
 end
 
 def weather_request
-  "https://simple-weather.p.mashape.com/weatherdata?lat=" + latitude + "&lng=" + longitude
+  'https://simple-weather.p.mashape.com/weatherdata?lat=' + latitude + "&lng=" + longitude
 end
 
 def weather_response
