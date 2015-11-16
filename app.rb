@@ -83,7 +83,7 @@ def city
 end
 
 def info
-  wiki_data['query']['pages'][id]'extract'] ||= 'Info was not found from query!'
+  wiki_data['query']['pages'][id]['extract'] ||= 'Info was not found from query!'
 end
 
 def wiki_url
