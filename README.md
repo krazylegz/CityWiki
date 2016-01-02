@@ -1,4 +1,4 @@
-# city_wiki
+# CityWik.rb
 getting data wikipedia and weather API using sinatra and unirest
 
 ## Installation
