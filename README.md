@@ -1,5 +1,5 @@
 # CityWiki
-getting data wikipedia and weather API using sinatra and unirest
+getting data from Wikipedia and Weather API using Sinatra and Unirest
 
 ## Installation
 
