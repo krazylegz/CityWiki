@@ -10,7 +10,7 @@ def key
 end
 
 get '/' do
-  'Type localhost:8080/new+york or localhost:8080/tampa+fl in the address bar and press enter.'
+  'Type localhost:8080/new%20york+ny or localhost:8080/tampa+fl in the address bar and press enter.'
 end
 
 get '/:city+:state' do
