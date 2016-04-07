@@ -19,7 +19,7 @@ get '/:city+:state' do
   @city = "#{params['city']}"
   @state = "#{params['state']}"
 
-  cityWiki = CityWiki.new(@city, @state)
+  cityWiki = CityWiki.new(params)
   cityWiki.json
 end
 
@@ -31,16 +31,12 @@ class CityWiki
     @state = attributes[:state]
   end
 
-  def city
-    @city
-  end
-
   def state
     @state
   end
 
   def json
-     { :city => city, :geo => [:latitude => latitude, :longitude => longitude],
+     { :city => @city, :geo => [:latitude => latitude, :longitude => longitude],
       :weather => forecast, :info => info, :url => info_url }.to_json
   end
 
@@ -62,20 +58,22 @@ class CityWiki
 
   def forecast
     weather.json['query']['results']['channel']['item']['forecast']
+  rescue
+    ''
   end
 
   private
 
   def wikipedia
-    Wikipedia.new(city, state)
+    Wikipedia.new(city: @city, state: @state)
   end
 
   def weather
-    Weather.new(city, state)
+    Weather.new(latitude: latitude, longitude: longitude)
   end
 
-  def geocoder
-    Geocoder.search("#{city}, #{state}")
+  def geocoder_request
+    Geocoder.search("#{@city}, #{@state}")
   end
 
   def latitude
@@ -92,7 +90,7 @@ class Wikipedia
 
   def initialize(attributes = {})
     @city = attributes[:city]
-    @state = attribute[:state]
+    @state = attributes[:state]
   end
 
   def city
@@ -104,7 +102,7 @@ class Wikipedia
   end
 
   def url
-    "http://en.wikipedia.org/w/api.php?action=query&prop=extracts|info&exintro&titles=#{city}+#{state}&format=json&explaintext&redirects&inprop=url&indexpageids"
+    "http://en.wikipedia.org/w/api.php?action=query&prop=extracts|info&exintro&titles=#{city},%20#{state}&format=json&explaintext&redirects&inprop=url&indexpageids"
   end
 
   def request 
@@ -112,7 +110,7 @@ class Wikipedia
   end
 
   def response
-    Unirest.get uri,
+    Unirest.get url,
       headers: {
         'X-Mashape-Key' => key,
         'Accept' => 'application/json'
