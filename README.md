@@ -11,7 +11,7 @@ touch keystore
 bundle
 
 # run server on port 8080
-ruby server.rb
+ruby app.rb
 ```
 
 *Type localhost:8080/new+york as an address url and press enter.*
