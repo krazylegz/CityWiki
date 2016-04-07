@@ -5,6 +5,10 @@ require 'geocoder'
 
 set :port, 8080
 
+def key
+  File.read('keystore')
+end
+
 get '/' do
   'Type localhost:8080/new+york or localhost:8080/tampa+fl in the address bar and press enter.'
 end
@@ -15,86 +19,140 @@ get '/:city+:state' do
   @city = "#{params['city']}"
   @state = "#{params['state']}"
 
-  build_json
+  cityWiki = CityWiki.new(@city, @state)
+  cityWiki.json
 end
 
-private
+class CityWiki
+  attr_accessor :city, :state
 
-def key
-  File.read('keystore')
+  def initialize(attributes = {})
+    @city = attributes[:city]
+    @state = attributes[:state]
+  end
+
+  def city
+    @city
+  end
+
+  def state
+    @state
+  end
+
+  def json
+     { :city => city, :geo => [:latitude => latitude, :longitude => longitude],
+      :weather => forecast, :info => info, :url => info_url }.to_json
+  end
+
+  def id
+    wikipedia.json['query']['pageids'][0] ||= 'Wiki Page ID was not found from query!'
+  end
+
+  def city
+    wikipedia.json['query']['pages'][id]['title'] ||= 'City was not found from query!'
+  end
+
+  def info
+    wikipedia.json['query']['pages'][id]['extract'] ||= 'Info was not found from query!'
+  end
+
+  def info_url
+    wikipedia.json['query']['pages'][id]['canonicalurl'] ||= 'Url was not returned from query!'
+  end
+
+  def forecast
+    weather.json['query']['results']['channel']['item']['forecast']
+  end
+
+  private
+
+  def wikipedia
+    Wikipedia.new(city, state)
+  end
+
+  def weather
+    Weather.new(city, state)
+  end
+
+  def geocoder
+    Geocoder.search("#{city}, #{state}")
+  end
+
+  def latitude
+    geocoder_request[0].latitude.to_s
+  end
+
+  def longitude
+    geocoder_request[0].longitude.to_s
+  end
 end
 
-def build_wikipedia
-  wiki = 'http://en.wikipedia.org/w/api.php?action=query&prop=extracts|info&exintro&titles='
-  wiki += "#{@city}+#{@state}"
-  wiki += '&format=json&explaintext&redirects&inprop=url&indexpageids'
+class Wikipedia
+  attr_accessor :city, :state
+
+  def initialize(attributes = {})
+    @city = attributes[:city]
+    @state = attribute[:state]
+  end
+
+  def city
+    @city
+  end
+
+  def state
+    @state
+  end
+
+  def url
+    "http://en.wikipedia.org/w/api.php?action=query&prop=extracts|info&exintro&titles=#{city}+#{state}&format=json&explaintext&redirects&inprop=url&indexpageids"
+  end
+
+  def request 
+    URI.parse(URI.encode(url.strip)).to_s
+  end
+
+  def response
+    Unirest.get uri,
+      headers: {
+        'X-Mashape-Key' => key,
+        'Accept' => 'application/json'
+      }
+  end
+
+  def json
+    JSON.parse(response.body.to_json) || 'Wiki data not found from query!'
+  end
 end
 
-def wiki_request
-  URI.parse(URI.encode(build_wikipedia.strip)).to_s
-end
+class Weather
+  attr_accessor :latitude, :longitude
 
-def wiki_response
-  Unirest.get wiki_request,
-              headers: {
-                'X-Mashape-Key' => key,
-                'Accept' => 'application/json'
-              }
-end
+  def initialize(attributes = {})
+    @latitude = attributes[:latitude]
+    @longitude = attributes[:longitude]
+  end
 
-def wiki_data
-  JSON.parse(wiki_response.body.to_json) || 'Wiki data not found from query!'
-end
+  def latitude
+    @latitude
+  end
 
-def geocoder_request
-  Geocoder.search("#{@city}, #{@state}")
-end
+  def longitude
+    @longitude
+  end
 
-def latitude
-  geocoder_request[0].latitude.to_s
-end
+  def request
+    'https://simple-weather.p.mashape.com/weatherdata?lat=' + latitude + '&lng=' + longitude
+  end
 
-def longitude
-  geocoder_request[0].longitude.to_s
-end
+  def response
+    Unirest.get request,
+      headers:{
+        'X-Mashape-Key' => key,
+        'Accept' => 'application/json'
+      }
+  end
 
-def weather_request
-  'https://simple-weather.p.mashape.com/weatherdata?lat=' + latitude + '&lng=' + longitude
-end
-
-def weather_response
-  Unirest.get weather_request,
-              headers:{
-                'X-Mashape-Key' => key,
-                'Accept' => 'application/json'
-              }
-end
-
-def weather_data
-  JSON.parse(weather_response.body.to_json)
-end
-
-def id
-  wiki_data['query']['pageids'][0] ||= 'Wiki Page ID was not found from query!'
-end
-
-def city
-  wiki_data['query']['pages'][id]['title'] ||= 'City was not found from query!'
-end
-
-def info
-  wiki_data['query']['pages'][id]['extract'] ||= 'Info was not found from query!'
-end
-
-def wiki_url
-  wiki_data['query']['pages'][id]['canonicalurl'] ||= 'Url was not returned from query!'
-end
-
-def forecast
-  weather_data['query']['results']['channel']['item']['forecast']
-end
-
-def build_json
-  { :city => city, :geo => [:latitude => latitude, :longitude => longitude],
-    :weather_forcast => forecast, :info => info, :url => wiki_url }.to_json
+  def json
+    JSON.parse(response.body.to_json)
+  end
 end
