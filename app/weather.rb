@@ -1,3 +1,5 @@
+require 'unirest'
+
 class Weather
   attr_accessor :latitude, :longitude
 

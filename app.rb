@@ -1,6 +1,5 @@
 require 'sinatra'
 require 'json'
-require 'unirest'
 require 'geocoder'
 
 require_relative 'app/city_wiki'
