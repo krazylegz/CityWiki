@@ -3,6 +3,10 @@ require 'unirest'
 class Weather
   attr_accessor :latitude, :longitude
 
+  def key
+    File.read('keystore')
+  end
+
   def initialize(attributes = {})
     @latitude = attributes[:latitude]
     @longitude = attributes[:longitude]

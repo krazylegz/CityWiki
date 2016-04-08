@@ -6,10 +6,6 @@ require_relative 'app/city_wiki'
 
 set :port, 8080
 
-def key
-  File.read('keystore')
-end
-
 get '/' do
   'Type localhost:8080/new%20york+ny or localhost:8080/tampa+fl in the address bar and press enter.'
 end
