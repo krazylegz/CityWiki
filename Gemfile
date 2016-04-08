@@ -6,3 +6,4 @@ gem 'geocoder'
 gem 'rspec', require: false, group: :test
 gem 'simplecov', require: false, group: :test
 gem 'pry', require: false, group: :test
+gem 'rack-test', require: false, group: :test
