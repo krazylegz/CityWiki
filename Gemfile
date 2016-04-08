@@ -4,3 +4,4 @@ gem 'unirest', '1.1.2'
 gem 'json', '1.8.3'
 gem 'geocoder'
 gem 'rspec', require: false, group: :test
+gem 'simplecov', require: false, group: :test

@@ -6,3 +6,4 @@ Gemfile.lock
 data
 cities
 cities.tar.gz
+coverage/*

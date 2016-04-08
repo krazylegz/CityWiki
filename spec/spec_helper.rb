@@ -1,5 +1,7 @@
 # spec/spec_helper.rb
 require 'rack/test'
+require 'simplecov'
+SimpleCov.start
 require 'rspec'
 
 ENV['RACK_ENV'] = 'test'
